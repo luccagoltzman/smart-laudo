@@ -1,0 +1,63 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  flex-wrap: wrap;
+
+  &.sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  &.lg {
+    padding: 0.75rem 1.25rem;
+    font-size: 1.1rem;
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.label {
+  color: inherit;
+}
+
+.score {
+  opacity: 0.9;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.low {
+  background: rgba(34, 139, 34, 0.18);
+  color: #1a6b1a;
+
+  .dot {
+    background: #22a722;
+  }
+}
+
+.medium {
+  background: rgba(218, 165, 32, 0.22);
+  color: #9a7b0a;
+
+  .dot {
+    background: #daa520;
+  }
+}
+
+.high {
+  background: rgba(180, 50, 50, 0.18);
+  color: #b83232;
+
+  .dot {
+    background: #c03939;
+  }
+}

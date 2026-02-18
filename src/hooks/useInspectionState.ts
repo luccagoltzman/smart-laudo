@@ -1,0 +1,132 @@
+import { useCallback, useEffect, useState } from 'react';
+import { getInitialSections } from '../data/checklistSections';
+import type { InspectionState, VehicleIdentification } from '../types/checklist.types';
+import { calculateRiskScore, getRiskLevel } from '../utils/riskScore';
+
+const STORAGE_KEY = 'smart-laudo-inspection';
+
+const defaultVehicle: VehicleIdentification = {
+  plate: '',
+  renavam: '',
+  chassi: '',
+  brand: '',
+  model: '',
+  year: '',
+  version: '',
+  color: '',
+  km: '',
+};
+
+function loadFromStorage(): InspectionState | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as InspectionState;
+    if (parsed?.sections) return parsed;
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+function saveToStorage(state: InspectionState): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // ignore
+  }
+}
+
+export function useInspectionState() {
+  const [state, setState] = useState<InspectionState>(() => {
+    const saved = loadFromStorage();
+    if (saved) return saved;
+    return {
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      vehicle: { ...defaultVehicle },
+      sections: getInitialSections(),
+      riskLevel: 'low',
+      riskScore: 0,
+    };
+  });
+
+  const updateVehicle = useCallback((vehicle: Partial<VehicleIdentification>) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        vehicle: { ...prev.vehicle, ...vehicle },
+      };
+      saveToStorage(next);
+      return next;
+    });
+  }, []);
+
+  const updateItemStatus = useCallback(
+    (sectionId: string, itemId: string, status: InspectionState['sections'][0]['items'][0]['status'], observation?: string) => {
+      setState((prev) => {
+        const sections = prev.sections.map((sec) => {
+          if (sec.id !== sectionId) return sec;
+          return {
+            ...sec,
+            items: sec.items.map((item) =>
+              item.id !== itemId
+                ? item
+                : { ...item, status, observation: observation ?? item.observation }
+            ),
+          };
+        });
+        const riskScore = calculateRiskScore(sections);
+        const riskLevel = getRiskLevel(riskScore);
+        const next = { ...prev, sections, riskScore, riskLevel };
+        saveToStorage(next);
+        return next;
+      });
+    },
+    []
+  );
+
+  const addObservation = useCallback((sectionId: string, itemId: string, observation: string) => {
+    setState((prev) => {
+      const sections = prev.sections.map((sec) => {
+        if (sec.id !== sectionId) return sec;
+        return {
+          ...sec,
+          items: sec.items.map((item) =>
+            item.id !== itemId ? item : { ...item, observation }
+          ),
+        };
+      });
+      const next = { ...prev, sections };
+      saveToStorage(next);
+      return next;
+    });
+  }, []);
+
+  const startNewInspection = useCallback(() => {
+    const next: InspectionState = {
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      vehicle: { ...defaultVehicle },
+      sections: getInitialSections(),
+      riskLevel: 'low',
+      riskScore: 0,
+    };
+    setState(next);
+    saveToStorage(next);
+  }, []);
+
+  useEffect(() => {
+    const riskScore = calculateRiskScore(state.sections);
+    const riskLevel = getRiskLevel(riskScore);
+    setState((prev) => (prev.riskScore !== riskScore || prev.riskLevel !== riskLevel ? { ...prev, riskScore, riskLevel } : prev));
+  }, [state.sections]);
+
+  return {
+    state,
+    updateVehicle,
+    updateItemStatus,
+    addObservation,
+    startNewInspection,
+  };
+}

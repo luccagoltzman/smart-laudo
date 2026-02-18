@@ -1,0 +1,35 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25em 0.6em;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85em;
+  white-space: nowrap;
+
+  &.sm {
+    padding: 0.15em 0.4em;
+    font-size: 0.75em;
+  }
+}
+
+.pending {
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+}
+
+.approved {
+  background: rgba(34, 139, 34, 0.2);
+  color: #1a6b1a;
+}
+
+.attention {
+  background: rgba(218, 165, 32, 0.25);
+  color: #9a7b0a;
+}
+
+.rejected {
+  background: rgba(180, 50, 50, 0.2);
+  color: #b83232;
+}

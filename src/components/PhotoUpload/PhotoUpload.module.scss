@@ -1,0 +1,40 @@
+.wrapper {
+  position: relative;
+}
+
+.input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  background: rgba(13, 59, 44, 0.08);
+  border: 1px dashed var(--color-primary);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  touch-action: manipulation;
+
+  &:hover:not(:disabled) {
+    background: rgba(13, 59, 44, 0.12);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.icon {
+  font-size: 1.2em;
+}
