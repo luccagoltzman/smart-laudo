@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { getInitialSections } from '../data/checklistSections';
 import type { InspectionState, VehicleIdentification } from '../types/checklist.types';
 import { calculateRiskScore, getRiskLevel } from '../utils/riskScore';
