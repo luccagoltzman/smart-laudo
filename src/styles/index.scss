@@ -1,0 +1,54 @@
+// Variáveis — tema verde profissional (vistoria/laudo)
+:root {
+  --color-primary: #0d3b2c;
+  --color-primary-light: #165a42;
+  --color-on-primary: #ffffff;
+  --color-bg: #f0f4f2;
+  --color-surface: #ffffff;
+  --color-surface-2: #e8eeeb;
+  --color-surface-3: #dce4e0;
+  --color-text: #1a1a1a;
+  --color-text-muted: #5c6b64;
+  --color-border: #c5d0cb;
+  --color-danger: #c03939;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+button {
+  font-family: inherit;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+
+a {
+  color: var(--color-primary);
+}
