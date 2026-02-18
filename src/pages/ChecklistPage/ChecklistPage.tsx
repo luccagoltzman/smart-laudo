@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { Button } from '../../components/Button';
 import { Card, CardHeader, CardTitle } from '../../components/Card';
 import { Layout } from '../../components/Layout';
 import { RiskBadge } from '../../components/RiskBadge';
@@ -43,9 +42,9 @@ export function ChecklistPage() {
         </div>
 
         <div className={styles.actions}>
-          <Button asChild fullWidth size="lg" variant="primary">
-            <Link to="/resumo">Ver resumo e gerar laudo</Link>
-          </Button>
+          <Link to="/resumo" className={styles.primaryLink}>
+            Ver resumo e gerar laudo
+          </Link>
         </div>
       </div>
     </Layout>

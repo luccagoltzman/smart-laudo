@@ -1,0 +1,63 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.subtitle {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.progressWrap {
+  margin-bottom: 1.25rem;
+}
+
+.progressBar {
+  height: 10px;
+  background: var(--color-surface-2);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 1.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-radius: 12px;
+  transition: filter 0.15s;
+
+  &:hover {
+    filter: brightness(1.05);
+  }
+}
+
+.summaryList {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}

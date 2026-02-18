@@ -116,12 +116,6 @@ export function useInspectionState() {
     saveToStorage(next);
   }, []);
 
-  useEffect(() => {
-    const riskScore = calculateRiskScore(state.sections);
-    const riskLevel = getRiskLevel(riskScore);
-    setState((prev) => (prev.riskScore !== riskScore || prev.riskLevel !== riskLevel ? { ...prev, riskScore, riskLevel } : prev));
-  }, [state.sections]);
-
   return {
     state,
     updateVehicle,
