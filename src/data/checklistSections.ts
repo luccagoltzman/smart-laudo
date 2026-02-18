@@ -1,6 +1,8 @@
 import type { ChecklistSection } from '../types/checklist.types';
 
-const createItem = (id: string, label: string): { id: string; label: string; status: 'pending' as const; photoIds?: string[] } => ({
+type PendingItem = { id: string; label: string; status: 'pending' };
+
+const createItem = (id: string, label: string): PendingItem => ({
   id,
   label,
   status: 'pending',
