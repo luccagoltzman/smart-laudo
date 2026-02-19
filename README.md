@@ -130,17 +130,23 @@ Cada componente importante tem seu próprio arquivo **TypeScript** (`.tsx`), **e
 - **Vite** – build e servidor de desenvolvimento rápidos  
 - **React Router** – navegação entre páginas  
 - **SCSS (módulos)** – estilos por componente, sem conflito de nomes  
+- **jsPDF** – geração do laudo em PDF (texto, imagens, assinatura, QR Code)  
+- **qrcode** / **qrcode.react** – geração e exibição do QR Code de validação  
+- **react-signature-canvas** – captura da assinatura digital do vistoriador  
 
 ---
 
 ## Próximos passos (roadmap)
 
-Funcionalidades planejadas para dar ainda mais valor:
+Funcionalidades já disponíveis:
 
-- [ ] **Gerar PDF** do laudo automaticamente  
-- [ ] **Fotos anexadas** por item no relatório final  
-- [ ] **Assinatura digital** do vistoriador  
-- [ ] **QR Code** para validar autenticidade do laudo  
+- [x] **Gerar PDF** do laudo automaticamente  
+- [x] **Fotos anexadas** por item no relatório final  
+- [x] **Assinatura digital** do vistoriador  
+- [x] **QR Code** para validar autenticidade do laudo  
+
+Próximas ideias:
+
 - [ ] **Modo offline** (funcionar sem internet em campo)  
 - [ ] **Histórico de vistorias** e banco de veículos  
 - [ ] **Área do cliente** para consultar o laudo pelo link  
@@ -149,4 +155,6 @@ Funcionalidades planejadas para dar ainda mais valor:
 
 <div align="center">
 
-**Smart Laudo** — checklist digital para vistori
+**Smart Laudo** — checklist digital para vistoria veicular e laudo cautelar.
+
+</div>
