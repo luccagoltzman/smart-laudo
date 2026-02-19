@@ -1,0 +1,1 @@
+export { ValidatePage } from './ValidatePage';

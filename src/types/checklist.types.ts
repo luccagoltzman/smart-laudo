@@ -16,7 +16,8 @@ export interface ChecklistItem {
   label: string;
   status: ItemStatus;
   observation?: string;
-  photoIds?: string[];
+  /** Fotos em base64 (data URL) para anexar ao laudo */
+  photos?: string[];
 }
 
 /**
@@ -55,6 +56,8 @@ export interface InspectionState {
   riskLevel: RiskLevel;
   riskScore: number;
   summaryNotes?: string;
+  /** Assinatura digital do vistoriador (data URL da imagem) */
+  signatureDataUrl?: string;
 }
 
 export const ITEM_STATUS_LABEL: Record<ItemStatus, string> = {

@@ -10,9 +10,11 @@ export interface ChecklistItemRowProps {
   label: string;
   status: ItemStatus;
   observation?: string;
+  photos?: string[];
   onStatusChange: (status: ItemStatus) => void;
   onObservationChange?: (value: string) => void;
   onPhotosSelect?: (files: File[]) => void;
+  onPhotosChange?: (photos: string[]) => void;
 }
 
 const STATUS_OPTIONS: ItemStatus[] = ['approved', 'attention', 'rejected'];
@@ -23,7 +25,9 @@ export function ChecklistItemRow({
   observation = '',
   onStatusChange,
   onObservationChange,
+  photos = [],
   onPhotosSelect,
+  onPhotosChange,
 }: ChecklistItemRowProps) {
   const [showObs, setShowObs] = useState(!!observation);
   const [obsValue, setObsValue] = useState(observation);
@@ -91,9 +95,30 @@ export function ChecklistItemRow({
         </>
       )}
 
-      {onPhotosSelect && (
+      {(onPhotosSelect || onPhotosChange) && (
         <div className={styles.photoBlock}>
-          <PhotoUpload label="Foto" onSelect={onPhotosSelect} maxFiles={2} />
+          {photos.length > 0 && (
+            <div className={styles.thumbnails}>
+              {photos.map((dataUrl, index) => (
+                <div key={index} className={styles.thumbWrap}>
+                  <img src={dataUrl} alt="" className={styles.thumb} />
+                  {onPhotosChange && (
+                    <button
+                      type="button"
+                      className={styles.thumbRemove}
+                      onClick={() => onPhotosChange(photos.filter((_, i) => i !== index))}
+                      aria-label="Remover foto"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          {onPhotosSelect && photos.length < 4 && (
+            <PhotoUpload label="Adicionar foto" onSelect={onPhotosSelect} maxFiles={4 - photos.length} />
+          )}
         </div>
       )}
     </div>

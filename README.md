@@ -24,7 +24,7 @@ Padronize o processo, reduza erros e transmita mais profissionalismo ao cliente.
 
 ## O que é o Smart Laudo?
 
-O **Smart Laudo** é um aplicativo web que funciona como um **checklist digital** para vistorias de veículos. Em vez de usar papel e caneta, o vistoriador preenche tudo no celular ou tablet: dados do carro, documentação, estrutura, pintura, vidros, motor, segurança e outros itens. No final, o sistema mostra um **resumo com nível de risco** (baixo, atenção ou alto) e prepara o terreno para gerar um laudo em PDF.
+O **Smart Laudo** é um aplicativo web que funciona como um **checklist digital** para vistorias de veículos. Em vez de usar papel e caneta, o vistoriador preenche tudo no celular ou tablet: dados do carro, documentação, estrutura, pintura, vidros, motor, segurança e outros itens. No final, o sistema mostra um **resumo com nível de risco** (baixo, atenção ou alto), permite **assinar digitalmente**, exibe um **QR Code para validação** e **gera o laudo em PDF** com todas as fotos e a assinatura incluídas.
 
 ---
 
@@ -45,9 +45,14 @@ O **Smart Laudo** é um aplicativo web que funciona como um **checklist digital*
 | **10 seções de checklist** | Documentação, estrutura, pintura, vidros, VIN, motor, segurança, testes funcionais, rodagem |
 | **Status por item** | Cada item pode ser **Aprovado**, **Atenção** ou **Reprovado** |
 | **Observações** | Campo de texto opcional em qualquer item |
-| **Foto por item** | Botão para anexar fotos (captura ou galeria) |
+| **Fotos por item** | Até 4 fotos por item (câmera ou galeria), com miniaturas e remoção individual |
+| **Fotos no PDF** | As fotos anexadas entram no laudo em PDF ao lado de cada item |
 | **Score de risco** | Cálculo automático: Baixo risco, Atenção ou Alto risco |
-| **Resumo da vistoria** | Página com totais por status e dados do veículo |
+| **Resumo da vistoria** | Totais por status, dados do veículo, assinatura e QR Code |
+| **Assinatura digital** | Área para assinar com dedo ou mouse; assinatura vai para o PDF |
+| **Gerar PDF** | Botão que gera e baixa o laudo em PDF (dados, seções, fotos, assinatura, QR Code) |
+| **QR Code de validação** | Cliente escaneia o QR e acessa a página que confirma a autenticidade do laudo |
+| **Página Validar** | Rota `/validar/:id` exibe “Laudo válido” e dados do veículo quando o ID existe |
 | **Salvamento automático** | Tudo é salvo no navegador (localStorage); ao reabrir, o progresso continua |
 | **Mobile-first** | Layout pensado para uso em celular/tablet, com botões grandes e fáceis de tocar |
 
@@ -55,7 +60,8 @@ O **Smart Laudo** é um aplicativo web que funciona como um **checklist digital*
 
 1. **Início** → Ver progresso e tocar em *Iniciar checklist* ou *Continuar checklist*  
 2. **Checklist** → Preencher identificação do veículo e percorrer as 10 seções, marcando ✓ / ! / ✕ e adicionando observações ou fotos quando quiser  
-3. **Resumo** → Ver score de risco, totais por status e opções *Continuar editando* ou *Nova vistoria*  
+3. **Resumo** → Ver score de risco, totais por status, **assinar digitalmente**, ver o **QR Code** e tocar em **Gerar PDF do laudo** para baixar o arquivo  
+4. **Validação** → O cliente pode escanear o QR Code (ou acessar o link do PDF) para abrir a página de validação e conferir o laudo  
 
 ---
 
@@ -99,13 +105,13 @@ O **Smart Laudo** é um aplicativo web que funciona como um **checklist digital*
 ```
 smart-laudo/
 ├── src/
-│   ├── components/     # Componentes reutilizáveis (botões, cards, status, etc.)
+│   ├── components/     # Componentes reutilizáveis (botões, cards, status, assinatura, etc.)
 │   ├── data/           # Dados do checklist (seções e itens)
-│   ├── hooks/          # Lógica de estado (vistoria, salvamento)
-│   ├── pages/          # Páginas da aplicação (Home, Checklist, Resumo)
+│   ├── hooks/          # Lógica de estado (vistoria, fotos, assinatura, salvamento)
+│   ├── pages/          # Home, Checklist, Resumo, Validar (/validar/:id)
 │   ├── styles/         # Estilos globais (variáveis, reset)
-│   ├── types/          # Definições TypeScript (tipos do checklist)
-│   ├── utils/          # Funções auxiliares (cálculo de risco)
+│   ├── types/          # Definições TypeScript (checklist, assinatura)
+│   ├── utils/          # Cálculo de risco, geração de PDF, validação
 │   ├── App.tsx         # Rotas e estrutura principal
 │   └── main.tsx        # Ponto de entrada
 ├── index.html
@@ -143,6 +149,4 @@ Funcionalidades planejadas para dar ainda mais valor:
 
 <div align="center">
 
-**Smart Laudo** — checklist digital para vistoria veicular e laudo cautelar.
-
-</div>
+**Smart Laudo** — checklist digital para vistori

@@ -8,7 +8,9 @@ const createItem = (id: string, label: string): PendingItem => ({
   status: 'pending',
 });
 
-export const CHECKLIST_SECTIONS: Omit<ChecklistSection, 'items'> & { items: Array<{ id: string; label: string; status: 'pending' }> }[] = [
+type SectionTemplate = Omit<ChecklistSection, 'items'> & { items: PendingItem[] };
+
+export const CHECKLIST_SECTIONS: SectionTemplate[] = [
   {
     id: 'identificacao',
     title: 'Identificação do Veículo',
@@ -139,7 +141,7 @@ export function getInitialSections(): ChecklistSection[] {
       ...item,
       status: item.status as ChecklistSection['items'][0]['status'],
       observation: undefined,
-      photoIds: [],
+      photos: [],
     })),
   }));
 }

@@ -7,9 +7,10 @@ export interface SectionBlockProps {
   section: ChecklistSection;
   onItemStatus: (itemId: string, status: ChecklistSection['items'][0]['status'], observation?: string) => void;
   onItemPhoto?: (itemId: string, files: File[]) => void;
+  onItemPhotosChange?: (itemId: string, photos: string[]) => void;
 }
 
-export function SectionBlock({ section, onItemStatus, onItemPhoto }: SectionBlockProps) {
+export function SectionBlock({ section, onItemStatus, onItemPhoto, onItemPhotosChange }: SectionBlockProps) {
   return (
     <Card className={styles.section} padding="none">
       <CardHeader className={styles.header}>
@@ -26,9 +27,11 @@ export function SectionBlock({ section, onItemStatus, onItemPhoto }: SectionBloc
             label={item.label}
             status={item.status}
             observation={item.observation}
+            photos={item.photos}
             onStatusChange={(status) => onItemStatus(item.id, status)}
             onObservationChange={(observation) => onItemStatus(item.id, item.status, observation)}
             onPhotosSelect={onItemPhoto ? (files) => onItemPhoto(item.id, files) : undefined}
+            onPhotosChange={onItemPhotosChange ? (photos) => onItemPhotosChange(item.id, photos) : undefined}
           />
         ))}
       </div>

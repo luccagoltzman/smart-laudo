@@ -1,14 +1,20 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { QRCodeSVG } from 'qrcode.react';
 import { Card, CardHeader, CardTitle } from '../../components/Card';
 import { Layout } from '../../components/Layout';
 import { RiskBadge } from '../../components/RiskBadge';
+import { SignaturePad } from '../../components/SignaturePad';
 import { StatusBadge } from '../../components/StatusBadge';
 import { useInspectionState } from '../../hooks/useInspectionState';
 import type { ItemStatus } from '../../types/checklist.types';
+import { generateLaudoPdf, saveReportForValidation } from '../../utils/generateLaudoPdf';
 import styles from './SummaryPage.module.scss';
 
 export function SummaryPage() {
-  const { state, startNewInspection } = useInspectionState();
+  const { state, startNewInspection, setSignature } = useInspectionState();
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const validationUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/validar/${state.id}`;
 
   const countByStatus = (status: ItemStatus) =>
     state.sections.reduce(
@@ -68,6 +74,25 @@ export function SummaryPage() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Assinatura do vistoriador</CardTitle>
+          </CardHeader>
+          <SignaturePad value={state.signatureDataUrl} onChange={setSignature} />
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>QR Code de validação</CardTitle>
+          </CardHeader>
+          <p className={styles.qrHint}>
+            O cliente pode escanear este QR Code para validar a autenticidade do laudo.
+          </p>
+          <div className={styles.qrWrap}>
+            <QRCodeSVG value={validationUrl} size={160} level="M" aria-label="QR Code para validação do laudo" />
+          </div>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Veículo</CardTitle>
           </CardHeader>
           <dl className={styles.vehicleList}>
@@ -98,6 +123,23 @@ export function SummaryPage() {
           </dl>
         </Card>
 
+        <button
+          type="button"
+          className={styles.btnPdf}
+          disabled={pdfLoading}
+          onClick={async () => {
+            setPdfLoading(true);
+            try {
+              saveReportForValidation(state);
+              await generateLaudoPdf(state, window.location.origin);
+            } finally {
+              setPdfLoading(false);
+            }
+          }}
+        >
+          {pdfLoading ? 'Gerando PDF…' : 'Gerar PDF do laudo'}
+        </button>
+
         <div className={styles.actions}>
           <Link to="/" className={styles.btnPrimary}>
             Continuar editando
@@ -106,10 +148,6 @@ export function SummaryPage() {
             Nova vistoria
           </Link>
         </div>
-
-        <p className={styles.footer}>
-          Em breve: geração de PDF, fotos anexadas, assinatura digital e QR Code de validação.
-        </p>
       </div>
     </Layout>
   );

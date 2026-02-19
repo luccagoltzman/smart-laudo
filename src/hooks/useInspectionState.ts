@@ -103,6 +103,31 @@ export function useInspectionState() {
     });
   }, []);
 
+  const updateItemPhotos = useCallback((sectionId: string, itemId: string, photos: string[]) => {
+    setState((prev) => {
+      const sections = prev.sections.map((sec) => {
+        if (sec.id !== sectionId) return sec;
+        return {
+          ...sec,
+          items: sec.items.map((item) =>
+            item.id !== itemId ? item : { ...item, photos }
+          ),
+        };
+      });
+      const next = { ...prev, sections };
+      saveToStorage(next);
+      return next;
+    });
+  }, []);
+
+  const setSignature = useCallback((signatureDataUrl: string | undefined) => {
+    setState((prev) => {
+      const next = { ...prev, signatureDataUrl };
+      saveToStorage(next);
+      return next;
+    });
+  }, []);
+
   const startNewInspection = useCallback(() => {
     const next: InspectionState = {
       id: crypto.randomUUID(),
@@ -111,6 +136,7 @@ export function useInspectionState() {
       sections: getInitialSections(),
       riskLevel: 'low',
       riskScore: 0,
+      signatureDataUrl: undefined,
     };
     setState(next);
     saveToStorage(next);
@@ -121,6 +147,8 @@ export function useInspectionState() {
     updateVehicle,
     updateItemStatus,
     addObservation,
+    updateItemPhotos,
+    setSignature,
     startNewInspection,
   };
 }

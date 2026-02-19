@@ -5,10 +5,11 @@ import { RiskBadge } from '../../components/RiskBadge';
 import { SectionBlock } from '../../components/SectionBlock';
 import { VehicleForm } from '../../components/VehicleForm';
 import { useInspectionState } from '../../hooks/useInspectionState';
+import { filesToDataUrls } from '../../utils/fileToDataUrl';
 import styles from './ChecklistPage.module.scss';
 
 export function ChecklistPage() {
-  const { state, updateVehicle, updateItemStatus } = useInspectionState();
+  const { state, updateVehicle, updateItemStatus, updateItemPhotos } = useInspectionState();
 
   const handleVehicleChange = (field: keyof typeof state.vehicle, value: string) => {
     updateVehicle({ [field]: value });
@@ -37,6 +38,15 @@ export function ChecklistPage() {
               onItemStatus={(itemId, status, observation) =>
                 updateItemStatus(section.id, itemId, status, observation)
               }
+              onItemPhoto={(itemId, files) => {
+                const item = section.items.find((i) => i.id === itemId);
+                if (!item) return;
+                filesToDataUrls(files, 4).then((urls) => {
+                  const current = item.photos ?? [];
+                  updateItemPhotos(section.id, itemId, [...current, ...urls].slice(0, 4));
+                });
+              }}
+              onItemPhotosChange={(itemId, photos) => updateItemPhotos(section.id, itemId, photos)}
             />
           ))}
         </div>

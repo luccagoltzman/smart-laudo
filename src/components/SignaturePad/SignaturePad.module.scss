@@ -1,0 +1,49 @@
+.wrapper {
+  width: 100%;
+}
+
+.padWrap {
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  min-height: 160px;
+}
+
+.pad {
+  width: 100% !important;
+  height: 160px !important;
+  touch-action: none;
+}
+
+.hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.preview {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.previewLabel {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.previewImg {
+  max-width: 100%;
+  max-height: 80px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
