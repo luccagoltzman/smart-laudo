@@ -117,7 +117,8 @@ export async function generateLaudoPdf(
     setColor(doc, colors.text);
   };
 
-  const text = (str: string, fontSize = FONT_NORMAL, color = colors.text) => {
+  type Rgb = { r: number; g: number; b: number };
+  const text = (str: string, fontSize = FONT_NORMAL, color: Rgb = colors.text) => {
     addPageIfNeeded(LINE_HEIGHT * 2);
     doc.setFontSize(fontSize);
     setColor(doc, color);

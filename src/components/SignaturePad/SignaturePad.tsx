@@ -40,7 +40,7 @@ export function SignaturePad({ value, onChange, disabled }: SignaturePadProps) {
     <div className={styles.wrapper}>
       <div className={styles.padWrap}>
         <SignatureCanvas
-          ref={padRef}
+          ref={padRef as unknown as React.LegacyRef<InstanceType<typeof SignatureCanvas>>}
           canvasProps={{
             className: styles.pad,
             'aria-label': 'Área de assinatura',
