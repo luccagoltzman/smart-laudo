@@ -35,7 +35,8 @@
   color: var(--color-text-muted);
 }
 
-.cta {
+.cta,
+.ctaSecondary {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,13 +45,26 @@
   font-size: 1.05rem;
   font-weight: 600;
   text-decoration: none;
-  color: var(--color-on-primary);
-  background: var(--color-primary);
   border-radius: 12px;
   transition: filter 0.15s;
+}
+
+.cta {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
 
   &:hover {
     filter: brightness(1.05);
+  }
+}
+
+.ctaSecondary {
+  color: var(--color-primary);
+  background: var(--color-surface-2);
+  border: 2px solid var(--color-primary);
+
+  &:hover {
+    filter: brightness(0.98);
   }
 }
 

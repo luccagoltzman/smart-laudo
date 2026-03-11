@@ -1,0 +1,1 @@
+export { SummaryLojaPage } from './SummaryLojaPage';

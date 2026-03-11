@@ -94,7 +94,8 @@ function getStatusColor(status: ItemStatus) {
 
 export async function generateLaudoPdf(
   state: InspectionState,
-  validationBaseUrl: string
+  validationBaseUrl: string,
+  fileNamePrefix = 'laudo-cautelar'
 ): Promise<void> {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   let y = MARGIN;
@@ -362,5 +363,5 @@ export async function generateLaudoPdf(
   }
 
   drawFooter();
-  doc.save(`laudo-cautelar-${state.vehicle.plate || state.id.slice(0, 8)}.pdf`);
+  doc.save(`${fileNamePrefix}-${state.vehicle.plate || state.id.slice(0, 8)}.pdf`);
 }
