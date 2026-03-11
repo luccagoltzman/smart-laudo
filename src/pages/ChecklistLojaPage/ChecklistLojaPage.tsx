@@ -36,7 +36,13 @@ export function ChecklistLojaPage() {
       })
       .catch((err) => {
         if (cancelled) return;
-        setLoadError(err instanceof Error ? err.message : 'Erro ao carregar veículo');
+        const msg = err instanceof Error ? err.message : 'Erro ao carregar veículo';
+        const isNetworkOrCors = msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('CORS');
+        setLoadError(
+          isNetworkOrCors
+            ? 'Não foi possível acessar a API (rede ou CORS). Confira VITE_API_TOKEN no Vercel (Environment Variables) e se a API permite a origem deste app.'
+            : msg
+        );
         setLoadStatus('error');
       });
     return () => {

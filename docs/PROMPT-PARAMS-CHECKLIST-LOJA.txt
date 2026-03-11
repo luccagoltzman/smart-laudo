@@ -1,0 +1,26 @@
+=== PARAMS NECESSÁRIOS PARA O CHECKLIST LOJA (Smart Laudo) ===
+
+1) PARÂMETRO NA URL DO APP
+   - Path: /loja/checklist/:vehicleId
+   - Exemplo: https://seu-dominio.com/loja/checklist/52
+   - vehicleId = ID do veículo na API externa (obrigatório para carregar dados da API).
+
+2) VARIÁVEL DE AMBIENTE (opcional)
+   - VITE_API_BASE_URL = base da API (ex.: https://api.carmanager.com.br)
+   - Padrão se não definir: https://api.carmanager.com.br
+   - O app chama: GET {VITE_API_BASE_URL}/api/vehicles/{vehicleId}
+
+3) RESPOSTA QUE A API PRECISA RETORNAR (GET /api/vehicles/:id)
+   - Status: 200 OK
+   - Body: JSON com os campos (podem vir com outros campos além destes):
+     * id (number)
+     * plate (string)
+     * chassis (string)
+     * brand (string)
+     * model (string)
+     * year (string)
+     * color (string)
+     * km (string)
+     * notes (string | null) — usado como "Versão" no formulário
+
+Sem o vehicleId na URL o checklist abre em branco (entrada manual). Com vehicleId, o app busca o veículo na API e preenche identificação automaticamente.
