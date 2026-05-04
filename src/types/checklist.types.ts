@@ -28,6 +28,8 @@ export interface ChecklistSection {
   title: string;
   icon: string;
   items: ChecklistItem[];
+  /** Fotos agrupadas por tópico (ex.: checklist loja, após os itens da seção). */
+  topicPhotos?: string[];
 }
 
 /**

@@ -7,12 +7,14 @@ import { SectionBlock } from '../../components/SectionBlock';
 import { VehicleForm } from '../../components/VehicleForm';
 import { getVehicleById, mapApiVehicleToIdentification } from '../../api/vehicles';
 import { useLojaInspectionState } from '../../hooks/useLojaInspectionState';
-import { filesToDataUrls } from '../../utils/fileToDataUrl';
+import { filesToHighResDataUrls } from '../../utils/imageResizeDataUrl';
 import styles from './ChecklistLojaPage.module.scss';
+
+const TOPIC_PHOTOS_MAX = 8;
 
 export function ChecklistLojaPage() {
   const { vehicleId } = useParams<{ vehicleId: string }>();
-  const { state, updateVehicle, updateItemStatus, updateItemPhotos, startInspectionWithVehicle } =
+  const { state, updateVehicle, updateItemStatus, updateSectionTopicPhotos, startInspectionWithVehicle } =
     useLojaInspectionState();
   const [loadStatus, setLoadStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>(
     vehicleId ? 'loading' : 'idle'
@@ -102,18 +104,21 @@ export function ChecklistLojaPage() {
             <SectionBlock
               key={section.id}
               section={section}
+              itemPhotosEnabled={false}
+              topicPhotosEnabled
+              topicPhotosMax={TOPIC_PHOTOS_MAX}
               onItemStatus={(itemId, status, observation) =>
                 updateItemStatus(section.id, itemId, status, observation)
               }
-              onItemPhoto={(itemId, files) => {
-                const item = section.items.find((i) => i.id === itemId);
-                if (!item) return;
-                filesToDataUrls(files, 4).then((urls) => {
-                  const current = item.photos ?? [];
-                  updateItemPhotos(section.id, itemId, [...current, ...urls].slice(0, 4));
+              onTopicPhotosSelect={(files) => {
+                const current = section.topicPhotos ?? [];
+                const room = TOPIC_PHOTOS_MAX - current.length;
+                if (room <= 0) return;
+                filesToHighResDataUrls(files.slice(0, room), room).then((urls) => {
+                  updateSectionTopicPhotos(section.id, [...current, ...urls].slice(0, TOPIC_PHOTOS_MAX));
                 });
               }}
-              onItemPhotosChange={(itemId, photos) => updateItemPhotos(section.id, itemId, photos)}
+              onTopicPhotosChange={(photos) => updateSectionTopicPhotos(section.id, photos)}
             />
           ))}
         </div>

@@ -87,6 +87,7 @@ export const CHECKLIST_LOJA_SECTIONS: SectionTemplate[] = [
 export function getInitialLojaSections(): ChecklistSection[] {
   return CHECKLIST_LOJA_SECTIONS.map((sec) => ({
     ...sec,
+    topicPhotos: [],
     items: sec.items.map((item) => ({
       ...item,
       status: item.status as ChecklistSection['items'][0]['status'],

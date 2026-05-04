@@ -84,6 +84,36 @@
   margin-top: 0.5rem;
 }
 
+.photoToggle {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.photoClose {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0;
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
 .thumbnails {
   display: flex;
   flex-wrap: wrap;

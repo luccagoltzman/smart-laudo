@@ -17,12 +17,25 @@ const defaultVehicle: VehicleIdentification = {
   km: '',
 };
 
+function normalizeLojaSections(sections: InspectionState['sections']): InspectionState['sections'] {
+  return sections.map((sec) => ({
+    ...sec,
+    topicPhotos: Array.isArray(sec.topicPhotos) ? sec.topicPhotos : [],
+    items: sec.items.map((item) => ({
+      ...item,
+      photos: item.photos ?? [],
+    })),
+  }));
+}
+
 function loadFromStorage(): InspectionState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as InspectionState;
-    if (parsed?.sections) return parsed;
+    if (parsed?.sections) {
+      return { ...parsed, sections: normalizeLojaSections(parsed.sections) };
+    }
   } catch {
     // ignore
   }
@@ -120,6 +133,17 @@ export function useLojaInspectionState() {
     });
   }, []);
 
+  const updateSectionTopicPhotos = useCallback((sectionId: string, topicPhotos: string[]) => {
+    setState((prev) => {
+      const sections = prev.sections.map((sec) =>
+        sec.id === sectionId ? { ...sec, topicPhotos } : sec
+      );
+      const next = { ...prev, sections };
+      saveToStorage(next);
+      return next;
+    });
+  }, []);
+
   const setSignature = useCallback((signatureDataUrl: string | undefined) => {
     setState((prev) => {
       const next = { ...prev, signatureDataUrl };
@@ -163,6 +187,7 @@ export function useLojaInspectionState() {
     updateItemStatus,
     addObservation,
     updateItemPhotos,
+    updateSectionTopicPhotos,
     setSignature,
     startNewInspection,
     startInspectionWithVehicle,

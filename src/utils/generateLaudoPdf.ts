@@ -60,9 +60,15 @@ const FONT_TITLE = 18;
 const FONT_SECTION = 11;
 const HEADER_BAR_HEIGHT = 14;
 const SECTION_HEADER_HEIGHT = 9;
-const IMG_SIZE = 28;
-const IMG_GAP = 4;
-const IMG_PER_ROW = Math.floor((CONTENT_W + IMG_GAP) / (IMG_SIZE + IMG_GAP));
+/** Fotos no PDF: 2 colunas, células grandes para permitir ver detalhes ao imprimir. */
+const IMG_COLS = 2;
+const IMG_GAP = 5;
+const IMG_CELL_W = (CONTENT_W - IMG_GAP * (IMG_COLS - 1)) / IMG_COLS;
+const IMG_CELL_H = 58;
+/** Fotos por tópico (checklist loja): uma coluna, altura grande para ver detalhe. */
+const TOPIC_PHOTO_GAP = 6;
+const TOPIC_PHOTO_W = CONTENT_W - 4;
+const TOPIC_PHOTO_H = 92;
 const FOOTER_Y = PAGE_H - 12;
 
 function getStatusText(status: ItemStatus): string {
@@ -247,8 +253,10 @@ export async function generateLaudoPdf(
     y += SECTION_HEADER_HEIGHT + 4;
 
     for (const item of section.items) {
-      const hasPhotos = (item.photos?.length ?? 0) > 0;
-      const photoBlockH = hasPhotos ? Math.ceil((item.photos!.length || 0) / IMG_PER_ROW) * (IMG_SIZE + IMG_GAP) + IMG_GAP : 0;
+      const photoCount = item.photos?.length ?? 0;
+      const hasPhotos = photoCount > 0;
+      const photoRows = hasPhotos ? Math.ceil(photoCount / IMG_COLS) : 0;
+      const photoBlockH = hasPhotos ? photoRows * (IMG_CELL_H + IMG_GAP) + IMG_GAP : 0;
       addPageIfNeeded(LINE_HEIGHT * 3 + (item.observation ? LINE_HEIGHT * 2 : 0) + photoBlockH);
 
       const statusStr = getStatusText(item.status);
@@ -276,28 +284,53 @@ export async function generateLaudoPdf(
       }
 
       if (item.photos?.length) {
-        let xImg = MARGIN;
-        let rowStartY = y;
-        for (let i = 0; i < item.photos.length; i++) {
-          if (i > 0 && i % IMG_PER_ROW === 0) {
-            xImg = MARGIN;
-            rowStartY += IMG_SIZE + IMG_GAP;
-            y = rowStartY;
-            addPageIfNeeded(IMG_SIZE + IMG_GAP + 5);
+        for (let row = 0; row < photoRows; row++) {
+          addPageIfNeeded(IMG_CELL_H + IMG_GAP + 5);
+          for (let col = 0; col < IMG_COLS; col++) {
+            const i = row * IMG_COLS + col;
+            if (i >= item.photos.length) break;
+            const xImg = MARGIN + col * (IMG_CELL_W + IMG_GAP);
+            const dataUrl = item.photos[i];
+            try {
+              const format = dataUrl.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+              doc.setDrawColor(colors.border.r, colors.border.g, colors.border.b);
+              doc.rect(xImg, y, IMG_CELL_W, IMG_CELL_H, 'S');
+              doc.addImage(dataUrl, format, xImg + 1, y + 1, IMG_CELL_W - 2, IMG_CELL_H - 2);
+            } catch {
+              // skip
+            }
           }
-          const dataUrl = item.photos[i];
-          try {
-            const format = dataUrl.startsWith('data:image/png') ? 'PNG' : 'JPEG';
-            doc.setDrawColor(colors.border.r, colors.border.g, colors.border.b);
-            doc.rect(xImg, y, IMG_SIZE, IMG_SIZE, 'S');
-            doc.addImage(dataUrl, format, xImg + 1, y + 1, IMG_SIZE - 2, IMG_SIZE - 2);
-          } catch {
-            // skip
-          }
-          xImg += IMG_SIZE + IMG_GAP;
+          y += IMG_CELL_H + IMG_GAP;
         }
-        y = rowStartY + IMG_SIZE + IMG_GAP + 4;
+        y += 4;
       }
+    }
+
+    const topicPhotos = section.topicPhotos ?? [];
+    if (topicPhotos.length > 0) {
+      addPageIfNeeded(LINE_HEIGHT * 2 + TOPIC_PHOTO_H + TOPIC_PHOTO_GAP + 8);
+      doc.setFontSize(FONT_SECTION);
+      doc.setFont('helvetica', 'bold');
+      setColor(doc, colors.primary);
+      doc.text(`Fotos — ${section.title}`, MARGIN, y);
+      doc.setFont('helvetica', 'normal');
+      setColor(doc, colors.text);
+      y += LINE_HEIGHT + 5;
+
+      for (let ti = 0; ti < topicPhotos.length; ti++) {
+        addPageIfNeeded(TOPIC_PHOTO_H + TOPIC_PHOTO_GAP + 8);
+        const dataUrl = topicPhotos[ti];
+        try {
+          const format = dataUrl.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+          doc.setDrawColor(colors.border.r, colors.border.g, colors.border.b);
+          doc.rect(MARGIN + 2, y, TOPIC_PHOTO_W - 4, TOPIC_PHOTO_H, 'S');
+          doc.addImage(dataUrl, format, MARGIN + 4, y + 2, TOPIC_PHOTO_W - 8, TOPIC_PHOTO_H - 4);
+        } catch {
+          // skip
+        }
+        y += TOPIC_PHOTO_H + TOPIC_PHOTO_GAP;
+      }
+      y += 2;
     }
 
     blank(4);

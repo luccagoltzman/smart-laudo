@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ItemStatus } from '../../types/checklist.types';
 import { Button } from '../Button';
 import { PhotoUpload } from '../PhotoUpload';
@@ -15,6 +15,10 @@ export interface ChecklistItemRowProps {
   onObservationChange?: (value: string) => void;
   onPhotosSelect?: (files: File[]) => void;
   onPhotosChange?: (photos: string[]) => void;
+  /** Se false, não exibe upload de fotos por item (ex.: checklist loja). Padrão: true. */
+  photosEnabled?: boolean;
+  /** Se true, fotos ficam atrás de “+ Fotos” até o usuário abrir (menos atrito no preenchimento). Padrão: true. */
+  photosCollapsedByDefault?: boolean;
 }
 
 const STATUS_OPTIONS: ItemStatus[] = ['approved', 'attention', 'rejected'];
@@ -28,9 +32,18 @@ export function ChecklistItemRow({
   photos = [],
   onPhotosSelect,
   onPhotosChange,
+  photosEnabled = true,
+  photosCollapsedByDefault = true,
 }: ChecklistItemRowProps) {
   const [showObs, setShowObs] = useState(!!observation);
   const [obsValue, setObsValue] = useState(observation);
+  const [showPhotoPanel, setShowPhotoPanel] = useState(
+    () => !photosCollapsedByDefault || (photos?.length ?? 0) > 0
+  );
+
+  useEffect(() => {
+    if ((photos?.length ?? 0) > 0) setShowPhotoPanel(true);
+  }, [photos?.length]);
 
   const handleObsBlur = () => {
     onObservationChange?.(obsValue.trim());
@@ -95,29 +108,50 @@ export function ChecklistItemRow({
         </>
       )}
 
-      {(onPhotosSelect || onPhotosChange) && (
+      {photosEnabled && (onPhotosSelect || onPhotosChange) && (
         <div className={styles.photoBlock}>
-          {photos.length > 0 && (
-            <div className={styles.thumbnails}>
-              {photos.map((dataUrl, index) => (
-                <div key={index} className={styles.thumbWrap}>
-                  <img src={dataUrl} alt="" className={styles.thumb} />
-                  {onPhotosChange && (
-                    <button
-                      type="button"
-                      className={styles.thumbRemove}
-                      onClick={() => onPhotosChange(photos.filter((_, i) => i !== index))}
-                      aria-label="Remover foto"
-                    >
-                      ×
-                    </button>
-                  )}
+          {!showPhotoPanel ? (
+            <button
+              type="button"
+              className={styles.photoToggle}
+              onClick={() => setShowPhotoPanel(true)}
+            >
+              + Fotos (opcional)
+            </button>
+          ) : (
+            <>
+              {photos.length > 0 && (
+                <div className={styles.thumbnails}>
+                  {photos.map((dataUrl, index) => (
+                    <div key={index} className={styles.thumbWrap}>
+                      <img src={dataUrl} alt="" className={styles.thumb} />
+                      {onPhotosChange && (
+                        <button
+                          type="button"
+                          className={styles.thumbRemove}
+                          onClick={() => onPhotosChange(photos.filter((_, i) => i !== index))}
+                          aria-label="Remover foto"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-          {onPhotosSelect && photos.length < 4 && (
-            <PhotoUpload label="Adicionar foto" onSelect={onPhotosSelect} maxFiles={4 - photos.length} />
+              )}
+              {onPhotosSelect && photos.length < 4 && (
+                <PhotoUpload label="Adicionar foto" onSelect={onPhotosSelect} maxFiles={4 - photos.length} />
+              )}
+              {photosCollapsedByDefault && photos.length === 0 && (
+                <button
+                  type="button"
+                  className={styles.photoClose}
+                  onClick={() => setShowPhotoPanel(false)}
+                >
+                  Ocultar fotos
+                </button>
+              )}
+            </>
           )}
         </div>
       )}
